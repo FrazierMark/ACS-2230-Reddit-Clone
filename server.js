@@ -17,10 +17,9 @@ app.use(express.urlencoded({ extended: false }));
 
 
 
-
-
 // Routes
 require('./controllers/posts')(app);
+require('./controllers/comments')(app);
 
 app.listen(3000);
 module.exports = app;
