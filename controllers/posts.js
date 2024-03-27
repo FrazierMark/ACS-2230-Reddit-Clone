@@ -28,10 +28,21 @@ module.exports = (app) => {
 		}
 	});
 
+	// HOME INDEX
 	app.get('/', async (req, res) => {
 		try {
 			const posts = await Post.find({}).lean();
 			return res.render('posts-index', { posts });
+		} catch (err) {
+			console.log(err.message);
+		}
+	});
+
+	// SUBREDDIT
+	app.get('/n/:subreddit', async (req, res) => {
+		try {
+			const post = await Post.find({ subreddit: req.params.subreddit }).lean();
+			res.render('posts-index', { post });
 		} catch (err) {
 			console.log(err.message);
 		}
