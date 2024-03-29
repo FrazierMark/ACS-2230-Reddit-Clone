@@ -8,6 +8,8 @@ module.exports = (app) => {
 			// INSTANTIATE INSTANCE OF MODEL
 			const comment = new Comment(req.body);
 
+            comment.author = req.user._id;
+
 			// SAVE INSTANCE OF Comment MODEL TO DB
 			await comment.save();
 
