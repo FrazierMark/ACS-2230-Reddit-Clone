@@ -8,20 +8,24 @@ module.exports = (app) => {
 
 	// CREATE NEW post
 	app.post('/posts/new', async (req, res) => {
-		try {
-			const post = new Post(req.body);
-			await post.save();
-			res.redirect('/');
-		} catch (error) {
-			console.error('Error saving post:', error);
-			res.status(500).send('Error saving post');
+		if (req.user) {
+			try {
+				const post = new Post(req.body);
+				await post.save();
+				res.redirect('/');
+			} catch (error) {
+				console.error('Error saving post:', error);
+				res.status(500).send('Error saving post');
+			}
 		}
 	});
 
 	// SHOW
 	app.get('/posts/:id', async (req, res) => {
 		try {
-			const post = await Post.findById(req.params.id).lean().populate('comments');
+			const post = await Post.findById(req.params.id)
+				.lean()
+				.populate('comments');
 			res.render('posts-show', { post });
 		} catch (err) {
 			console.log(err.message);
@@ -30,9 +34,10 @@ module.exports = (app) => {
 
 	// HOME INDEX
 	app.get('/', async (req, res) => {
+		const currentUser = req.user;
 		try {
 			const posts = await Post.find({}).lean();
-			return res.render('posts-index', { posts });
+			return res.render('posts-index', { posts, currentUser });
 		} catch (err) {
 			console.log(err.message);
 		}
