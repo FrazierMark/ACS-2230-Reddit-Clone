@@ -11,5 +11,6 @@ const postSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+postSchema.pre('findOne', Populate('author')).pre('find', Populate('author'));
 
 module.exports = model('Post', postSchema);

@@ -7,5 +7,10 @@ const commentSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+commentSchema
+  .pre('findOne', Populate('author'))
+  .pre('find', Populate('author'))
+  .pre('findOne', Populate('comments'))
+  .pre('find', Populate('comments'));
 
 module.exports = model('Comment', commentSchema);
