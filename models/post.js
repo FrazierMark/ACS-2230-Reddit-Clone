@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const Populate = require('../utils/autopopulate');
 
 const postSchema = new Schema(
 	{
