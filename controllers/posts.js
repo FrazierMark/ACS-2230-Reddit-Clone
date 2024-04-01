@@ -14,6 +14,9 @@ module.exports = (app) => {
 				const userId = req.user._id;
 				const post = new Post(req.body);
 				post.author = userId;
+				post.upVotes = [];
+				post.downVotes = [];
+				post.voteScore = 0;
 
 				await post.save();
 				const user = await User.findById(userId);
@@ -64,6 +67,33 @@ module.exports = (app) => {
 			res.render('posts-index', { posts, currentUser });
 		} catch (err) {
 			console.log(err.message);
+		}
+	});
+
+	// Upvote and Downvote
+	app.put('/posts/:id/vote-up', async (req, res) => {
+		try {
+			const post = await Post.findById(req.params.id);
+			post.upVotes.push(req.user._id);
+			post.voteScore += 1;
+			await post.save();
+			res.status(200).send();
+		} catch (err) {
+			console.log(err);
+			res.status(500).send('Internal Server Error');
+		}
+	});
+
+	app.put('/posts/:id/vote-down', async (req, res) => {
+		try {
+			const post = await Post.findById(req.params.id);
+			post.downVotes.push(req.user._id);
+			post.voteScore -= 1;
+			await post.save();
+			res.status(200).send();
+		} catch (err) {
+			console.log(err);
+			res.status(500).send('Internal Server Error');
 		}
 	});
 };
